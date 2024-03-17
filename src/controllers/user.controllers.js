@@ -13,8 +13,8 @@ const generateAccessAndRefereshTokens = async (userId) => {
     
     console.log("User found:", user); // Log the user object
     
-    const accessToken = user.generateAccessToken();
-    const refreshToken = user.generateRefreshToken();
+    const accessToken = await user.generateAccessToken();
+    const refreshToken = await user.generateRefreshToken();
 
     console.log("Generated Access Token:", accessToken);
     console.log("Generated Refresh Token:", refreshToken);
