@@ -41,7 +41,7 @@ router.route("/current-user").get(verifyJwt, getCurrentUser);
 router.route("/update-account").patch(verifyJwt, updateAccountDetails);
 router
   .route("/avatar")
-  .patch(verifyAvatar, upload.single("avatar"), updateUserAvatar);
+  .patch(verifyJwt, upload.single("avatar"), updateUserAvatar);
 router
   .route("/coverImage")
   .patch(verifyJwt, upload.single("coverImage"), updateCoverImage);

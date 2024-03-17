@@ -9,31 +9,34 @@ export const verifyJwt = asyncHandler(async (req, _ , next) => {
        req.cookies?.accessToken ||
        req.header("Authorization")?.replace("Bearer ", "");
    
-       console.log("tokekkk",req.cookies)
+     console.log("Token:", token); // Log the token for debugging
+
      if (!token) {
-       throw new ApiError(401, "unauthorised request");
+       throw new ApiError(401, "Unauthorized request");
      }
 
      if (typeof token !== 'string') {
-       console.log(token)
-      }
+       console.log("Invalid token type:", typeof token);
+       throw new ApiError(401, "Invalid token type");
+     }
     
-
      const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
    
      const user = await User.findById(decodedToken?._id).select(
-       "-password -refeshToken"
+       "-password -refreshToken"
      );
+
+     console.log("Decoded token:", decodedToken);
+     console.log("User:", user); // Log the user object for debugging
+
      if (!user) {
-       throw new ApiError(401, "Invalid Access token");
+       throw new ApiError(401, "Invalid access token");
      }
    
      req.user = user;
      next();
  } catch (error) {
-
-    throw new ApiError(401,error?.message || "invalid access token");
-    
+    console.error("Error in verifyJwt middleware:", error);
+    throw new ApiError(401, error?.message || "Invalid access token");
  }
-
 });
