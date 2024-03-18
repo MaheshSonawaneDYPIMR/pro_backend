@@ -11,23 +11,27 @@ const getAllVideos = asyncHandler(async (req, res) => {
 
 const publishAVideo = asyncHandler(async (req, res) => {
   const { title, discription } = req.body;
-
+  console.log('Received request to publish a video:', { title, discription });
+  console.log(req.files)
   if (!title || !discription) {
-    throw new ApiError(404, "please provide both a title and description");
+    throw new ApiError(404, "Please provide both a title and discription");
   }
 
   const videoFileLocalPath = req.files?.videoFile[0].path;
   const thumbnailPath = req.files?.thumbnail[0].path;
 
+  console.log('Video file path:', videoFileLocalPath);
+  console.log('Thumbnail path:', thumbnailPath);
+
   if (!videoFileLocalPath || !thumbnailPath) {
-    throw new ApiError(
-      404,
-      "please provide both a videoFileLocalPath and thumbnailPath"
-    );
+    throw new ApiError(404, "Please provide both a video file path and thumbnail path");
   }
 
   const videoFileData = await uploadOnCloudinary(videoFileLocalPath);
   const thumbnailData = await uploadOnCloudinary(thumbnailPath);
+
+  console.log('Uploaded video file data:', videoFileData);
+  console.log('Uploaded thumbnail data:', thumbnailData);
 
   if (!videoFileData || !thumbnailData) {
     throw new ApiError(400, "Upload failed");
@@ -35,20 +39,23 @@ const publishAVideo = asyncHandler(async (req, res) => {
 
   const video = await Video.create({
     title,
-    discription: discription,
+    discription,
     videoFile: videoFileData.url,
     thumbnail: thumbnailData.url,
     owner: req.user?._id,
     duration: videoFileData.duration,
   });
 
+  console.log('Created video:', video);
+
   const createdVideo = await Video.findById(video._id);
   if (!createdVideo) {
-    throw new ApiError(400, " something went wrong during video creation");
+    throw new ApiError(400, "Something went wrong during video creation");
   }
 
-  res.status(201).json(new ApiResponce(201, createdVideo, "video published"));
+  res.status(201).json(new ApiResponce(201, createdVideo, "Video published"));
 });
+
 
 const getVideoById = asyncHandler(async (req, res) => {
   console.log("requested params", req.params);
@@ -107,7 +114,7 @@ const updateVideo = asyncHandler(async (req, res) => {
   const updatedVideo = await Video.findById({ _id: videoId });
 
   res.status(200).json(new ApiResponce(200, updatedVideo, "video updated"));
-  //TODO: update video details like title, description, thumbnail
+  //TODO: update video details like title, discription, thumbnail
 });
 
 const deleteVideo = asyncHandler(async (req, res) => {

@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import { Schema } from "mongoose";
 
 const playlistSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
    
-  },discriptions:{
+  },discription:{
     type: String,
     required: true,
   },
