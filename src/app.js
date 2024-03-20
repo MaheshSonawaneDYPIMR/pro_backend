@@ -33,15 +33,19 @@ import videoRouter from "./routes/video.routes.js";
 import tweetRouter from "./routes/tweet.routes.js";
 import subscriberRouter from "./routes/subscrition.routes.js";
 import playlistRouter from "./routes/playlist.routes.js";
-import commentRouter from "./routes/coment.routes.js"
-
-
+import commentRouter from "./routes/coment.routes.js";
+import likeRouter from "./routes/like.routes.js";
+import healthChecker from "./routes/healthCheck.routes.js"
 //routes declarations
+
+app.use("/api/v1/healthcheck", healthChecker);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/video", videoRouter);
 app.use("/api/v1/tweets", tweetRouter);
 app.use("/api/v1/subscribers", subscriberRouter);
 app.use("/api/v1/playlist", playlistRouter);
 app.use("/api/v1/comment", commentRouter);
+app.use("/api/v1/likes", likeRouter);
+
 
 export { app };
